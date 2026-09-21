@@ -1,0 +1,20 @@
+{
+  "name": "codex-silent-mode",
+  "interface": {
+    "displayName": "Codex Silent Mode"
+  },
+  "plugins": [
+    {
+      "name": "codex-command-quiet",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-command-quiet"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[package]
+name = "codex-command-quiet"
+version = "0.1.0"
+edition = "2021"
+description = "A small MCP server that runs commands without returning their output."
+license = "MIT"
+
+[dependencies]
+serde_json = "1"

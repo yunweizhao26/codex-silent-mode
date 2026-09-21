@@ -1,0 +1,24 @@
+{
+  "name": "codex-command-quiet",
+  "version": "0.1.0",
+  "description": "Run shell commands through a Rust MCP tool that discards stdout and stderr.",
+  "author": {
+    "name": "Yunwei Zhao",
+    "url": "https://github.com/yunweizhao26"
+  },
+  "homepage": "https://github.com/yunweizhao26/codex-silent-mode",
+  "repository": "https://github.com/yunweizhao26/codex-silent-mode",
+  "license": "MIT",
+  "keywords": ["codex", "quiet", "shell", "rust", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Codex Command Quiet",
+    "shortDescription": "Run commands with no stdout or stderr",
+    "longDescription": "Adds a Rust MCP server with a run_quiet tool. The tool executes a requested shell command, discards its stdout and stderr, and returns only a concise status.",
+    "developerName": "Yunwei Zhao",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": ["Run this command quietly and return only its status."]
+  }
+}
