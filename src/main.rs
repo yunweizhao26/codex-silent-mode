@@ -765,12 +765,11 @@ fn main() {
 #[cfg(unix)]
 mod tests {
     use super::*;
-    use std::os::unix::fs::PermissionsExt;
     use tempfile::TempDir;
 
     fn test_options(directory: &Path) -> Options {
         Options {
-            codex: directory.join("fake-codex"),
+            codex: Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/transport.py"),
             cwd: directory.to_owned(),
             ..Options::default()
         }
@@ -779,12 +778,6 @@ mod tests {
     fn fixture() -> (TempDir, Options, Client, App) {
         let directory = tempfile::tempdir().unwrap();
         let options = test_options(directory.path());
-        fs::write(
-            &options.codex,
-            include_str!("../tests/fixtures/transport.py"),
-        )
-        .unwrap();
-        fs::set_permissions(&options.codex, fs::Permissions::from_mode(0o700)).unwrap();
         fs::write(directory.path().join("mode"), "roundtrip").unwrap();
         let client = Client::spawn(
             &options.codex,

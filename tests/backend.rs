@@ -20,9 +20,8 @@ struct Fixture {
 impl Fixture {
     fn new(mode: &str) -> Self {
         let directory = tempfile::tempdir().unwrap();
-        let executable = directory.path().join("fake-codex");
-        fs::write(&executable, include_str!("fixtures/transport.py")).unwrap();
-        fs::set_permissions(&executable, fs::Permissions::from_mode(0o700)).unwrap();
+        let executable =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/transport.py");
         fs::write(directory.path().join("mode"), mode).unwrap();
         let log = directory.path().join("stderr.log");
         Self {
