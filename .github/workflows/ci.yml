@@ -4,17 +4,67 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   rust:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: plugins/codex-command-quiet
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
-          components: rustfmt
-      - run: cargo fmt --check
-      - run: cargo test --locked
-      - run: cargo build --release --locked
+          components: rustfmt, clippy
+      - name: Check root formatting
+        run: cargo fmt --check
+      - name: Lint root client
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: Test root client
+        run: cargo test --locked
+      - name: Build client for PTY tests
+        run: cargo build --locked
+      - name: Test terminal interactions
+        run: python3 tests/terminal_e2e.py
+      - name: Check installer syntax and mocked installation
+        run: |
+          bash -n scripts/install.sh tests/install.sh
+          bash tests/install.sh
+      - name: Check legacy formatting
+        run: cargo fmt --manifest-path plugins/codex-command-quiet/Cargo.toml --check
+      - name: Lint legacy package
+        run: cargo clippy --manifest-path plugins/codex-command-quiet/Cargo.toml --locked --all-targets -- -D warnings
+      - name: Test legacy package
+        run: cargo test --manifest-path plugins/codex-command-quiet/Cargo.toml --locked
+
+  linux-artifact:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
+      - name: Install MUSL compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes musl-tools
+      - name: Build Linux client for HPC verification
+        run: cargo build --release --locked --bin codex-silent --target x86_64-unknown-linux-musl
+      - name: Package binary and checksum
+        run: |
+          mkdir -p dist
+          tar -czf dist/codex-silent-x86_64-unknown-linux-musl.tar.gz -C target/x86_64-unknown-linux-musl/release codex-silent
+          cd dist
+          sha256sum codex-silent-x86_64-unknown-linux-musl.tar.gz > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-silent-linux-x86_64
+          path: |
+            dist/codex-silent-x86_64-unknown-linux-musl.tar.gz
+            dist/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 7
