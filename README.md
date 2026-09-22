@@ -20,7 +20,7 @@ codex-silent --check
 codex-silent
 ```
 
-The root package is `codex-silent` v0.2.0. Cargo installs it into its usual bin directory, normally `~/.cargo/bin`. The legacy MCP package under `plugins/` is not installed by this command.
+The root package is `codex-silent` v0.2.1. Cargo installs it into its usual bin directory, normally `~/.cargo/bin`. The legacy MCP package under `plugins/` is not installed by this command.
 
 ### Prebuilt releases
 
@@ -31,7 +31,7 @@ curl --fail --location --proto '=https' --tlsv1.2 \
   https://raw.githubusercontent.com/yunweizhao26/codex-silent-mode/main/scripts/install.sh \
   --output codex-silent-install.sh
 less codex-silent-install.sh
-bash codex-silent-install.sh --version v0.2.0
+bash codex-silent-install.sh --version v0.2.1
 "$HOME/.local/bin/codex-silent" --check
 ```
 
@@ -127,6 +127,6 @@ CI runs the root client and legacy package checks on Linux and macOS. Installer 
 
 Every push also builds the `codex-silent-linux-x86_64` Actions artifact for testing before a release. It contains the Linux MUSL archive and `SHA256SUMS`, and is retained for seven days. Download it from the matching Actions run, verify the archive with `sha256sum -c SHA256SUMS`, then extract the binary for remote testing. This job runs independently of the test matrix; check the other jobs before treating that commit as validated. Pull requests run the tests but do not publish this artifact.
 
-Pushing a version tag such as `v0.2.0` runs the release workflow. The tag must match the root package version, and the root `Cargo.lock` must be committed. The workflow builds the three supported release binaries and publishes only their archives and `SHA256SUMS`. It does not build or release the legacy plugin.
+Pushing a version tag such as `v0.2.1` runs the release workflow. The tag must match the root package version, and the root `Cargo.lock` must be committed. The workflow builds the three supported release binaries and publishes only their archives and `SHA256SUMS`. It does not build or release the legacy plugin.
 
 MIT licensed. See [LICENSE](LICENSE).
